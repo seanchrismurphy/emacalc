@@ -1,5 +1,7 @@
 options(tibble.width = Inf)
-  
+
+require(plyr); require(dplyr)
+
 # The simple, working version. 
 keep_top <- function(data, grouping) {
   
