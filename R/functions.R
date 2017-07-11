@@ -3,6 +3,7 @@ options(tibble.width = Inf)
 require(plyr); require(dplyr)
 
 # The simple, working version. 
+#' @export
 keep_top <- function(data, grouping) {
   
   # Select the relevant column names. Note that I didn't have .dots before, and again it needs it - without
@@ -29,6 +30,7 @@ keep_top <- function(data, grouping) {
 
 # So for keep bottom, we just want an easy way to strip out everything above the level we're interested
 # in. Then we can keep_upper before drilling down further, if need be. 
+#' @export
 keep_bottom <- function(data, grouping) {
   
   n_levels = length(grouping)
@@ -54,7 +56,6 @@ keep_bottom <- function(data, grouping) {
 # Calculate SD and relative SD (given some arbritrary level of grouping)
 
 # Calculate max, min and mean (given some arbritrary level of grouping). 
-
 
 # I realise saying that that maybe that's all I need? 
 
@@ -85,6 +86,8 @@ keep_bottom <- function(data, grouping) {
 
 # So here's person mean and day mean. I mean I could let the functions do either, and just have a parameter
 # for person or day. But this seems the right level of abstraction. 
+
+#' @export
 person_mean <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at(vars, funs('mean' = mean(., na.rm = TRUE))) %>%
@@ -92,6 +95,7 @@ person_mean <- function(data, grouping, vars) {
   out
 }
 
+#' @export
 day_mean <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_each_( vars, funs('day_mean' = mean(., na.rm = TRUE))) %>%
@@ -99,6 +103,7 @@ day_mean <- function(data, grouping, vars) {
   out
 }
 
+#' @export
 person_max <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at( vars, funs('max' = max(., na.rm = TRUE))) %>%
@@ -106,6 +111,7 @@ person_max <- function(data, grouping, vars) {
   out
 }
 
+#' @export
 day_max <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at( vars, funs('day_max' = max(., na.rm = TRUE))) %>%
@@ -113,6 +119,7 @@ day_max <- function(data, grouping, vars) {
   out
 }
 
+#' @export
 person_min <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at( vars, funs('min' = min(., na.rm = TRUE))) %>%
@@ -120,6 +127,7 @@ person_min <- function(data, grouping, vars) {
   out
 }
 
+#' @export
 day_min <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at( vars, funs('day_min' = min(., na.rm = TRUE))) %>%
@@ -127,6 +135,7 @@ day_min <- function(data, grouping, vars) {
   out
 }
 
+#' @export
 person_sd <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at( vars, funs('sd' = sd(., na.rm = TRUE))) %>%
@@ -134,6 +143,7 @@ person_sd <- function(data, grouping, vars) {
   out
 }
 
+#' @export
 day_sd <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at( vars, funs('day_sd' = sd(., na.rm = TRUE))) %>%
@@ -141,6 +151,7 @@ day_sd <- function(data, grouping, vars) {
   out
 }
 
+#' @export
 person_rel_sd <- function(data, grouping, vars, min, max) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at( vars, funs('rel_sd' = relativeSD(., MIN = min, MAX = max))) %>%
@@ -148,6 +159,7 @@ person_rel_sd <- function(data, grouping, vars, min, max) {
   out
 }
 
+#' @export
 day_rel_sd <- function(data, grouping, vars, min, max) {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at( vars, funs('day_rel_sd' = relativeSD(., MIN = min, MAX = max))) %>%
@@ -158,6 +170,7 @@ day_rel_sd <- function(data, grouping, vars, min, max) {
 
 ### So what I have ended up doing is creating functions to calculate the sd and relative sd of each of 
 ### daily max, min, and mean. 
+#' @export
 sd_of_day_mean <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     # Summarize to the means of each (probably) day
@@ -170,6 +183,7 @@ sd_of_day_mean <- function(data, grouping, vars) {
   return(out)
 }
 
+#' @export
 relativeSD_of_day_mean <- function(data, grouping, vars, min, max) {
   require(relativeVariability)
   out <- group_by_(data, .dots = grouping) %>%
@@ -183,7 +197,7 @@ relativeSD_of_day_mean <- function(data, grouping, vars, min, max) {
   return(out)
 }
 
-
+#' @export
 sd_of_day_max <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     # Summarize to the means of each (probably) day
@@ -196,6 +210,7 @@ sd_of_day_max <- function(data, grouping, vars) {
   return(out)
 }
 
+#' @export
 relativeSD_of_day_max <- function(data, grouping, vars, min, max) {
   require(relativeVariability)
   out <- group_by_(data, .dots = grouping) %>%
@@ -209,7 +224,7 @@ relativeSD_of_day_max <- function(data, grouping, vars, min, max) {
   return(out)
 }
 
-
+#' @export
 sd_of_day_min <- function(data, grouping, vars) {
   out <- group_by_(data, .dots = grouping) %>%
     # Summarize to the means of each (probably) day
@@ -222,6 +237,7 @@ sd_of_day_min <- function(data, grouping, vars) {
   return(out)
 }
 
+#' @export
 relativeSD_of_day_min <- function(data, grouping, vars, min, max) {
   require(relativeVariability)
   out <- group_by_(data, .dots = grouping) %>%
@@ -240,6 +256,7 @@ relativeSD_of_day_min <- function(data, grouping, vars, min, max) {
 # to calculate inertia but on the calculated day level variables to do daily stuff. It should work equally
 # well on both since those are named differently. 
 
+#' @export
 esm_lag <- function(data, grouping, vars, order = 'obs_id') {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at(vars, funs('lag' = lag(., order_by = order))) %>%
