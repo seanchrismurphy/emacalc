@@ -1,3 +1,7 @@
+# Will need to add some documentation for these functions before I forget what they do, but let's just
+# use them to get some results first!
+
+
 options(tibble.width = Inf)
 
 require(plyr); require(dplyr)
@@ -261,4 +265,68 @@ esm_lag <- function(data, grouping, vars, order = 'obs_id') {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at(vars, funs('lag' = lag(., order_by = order))) %>%
     as.data.frame()
+}
+
+
+# Adding some functions for my basic cleaning
+
+#' @export
+rename_cols <- function(data, ...) {
+  arguments <- list(...)
+  arguments <- unlist(arguments)
+  
+  # Though t we needed to swap arguments but we don't. 
+  # myargs <- names(arguments); names(myargs) <- arguments
+  
+  # Adding this line to automatically add any emotions that already match the emotions vector up above. So as long
+  # as we define the study, we only need to add arguments for emotions that are mispelled or shortened. 
+  data %>% rename_(.dots = arguments) %>% data.frame()
+}
+
+#' @export
+reverse_cols <- function(data, variables, min, max) {
+  study_vars <- variables[variables %in% colnames(data)]
+  data[study_vars] <- (max + min) - data[study_vars] 
+  data
+}
+
+# This is basically a simple function that can be used to add/subtract/multiply different variables. 
+# If you chained this together you could rescale variables. 
+
+#' @export
+operate_cols <- function(data, variables, operation = 'add', number) {
+  study_vars <- variables[variables %in% colnames(data)]
+  
+  if (operation %in% 'add') {
+    data[study_vars] <- data[study_vars] + number
+  }
+  
+  if (operation %in% 'subtract') {
+    data[study_vars] <- data[study_vars] - number
+  }
+  
+  if (operation %in% 'multiply') {
+    data[study_vars] <- data[study_vars] * number
+  }
+  
+  if (operation %in% 'divide') {
+    data[study_vars] <- data[study_vars] / number
+  }
+  data
+}
+
+my_rescale <- function (x, new.min, new.max, old.min, old.max) { 
+  nx = new.min + (new.max - new.min) * (x - old.min)/(old.max - old.min)
+  return(nx)
+}
+
+#' @export
+rescale_cols <- function(data, variables, old.min, old.max, new.min, new.max) {
+  
+  study_vars <- variables[variables %in% colnames(data)]
+  
+  data[study_vars] <- my_rescale(data[study_vars], new.min = new.min, 
+                                 new.max = new.max, old.min = old.min, 
+                                 old.max = old.max)
+  data
 }
