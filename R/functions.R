@@ -265,6 +265,7 @@ esm_lag <- function(data, grouping, vars, order = 'obs_id') {
   out <- group_by_(data, .dots = grouping) %>%
     mutate_at(vars, funs('lag' = lag(., order_by = order))) %>%
     as.data.frame()
+  return(out)
 }
 
 
@@ -329,4 +330,13 @@ rescale_cols <- function(data, variables, old.min, old.max, new.min, new.max) {
                                  new.max = new.max, old.min = old.min, 
                                  old.max = old.max)
   data
+}
+
+
+#' @export
+trim_min_obs <- function(data, grouping, min.obs = 2) { 
+out <- group_by_(data, .dots = grouping) %>%
+  dplyr::filter(n() >= min.obs) %>%
+  as.data.frame()
+  return(out)
 }
