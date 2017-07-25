@@ -16,12 +16,7 @@ person and moment level dataframes, and numerous other utility functions.
 Calculate aggregate statistics at the person level
 
 Person aggregation functions
-\code{\link{person_mean}}
-
-\code{\link{person_min}}
-\code{person_max}
-\code{person_sd}
-\code{person_relsd}
+\code{\link{person_mean}}, \code{\link{person_min}}, \code{\link{person_max}}, \code{\link{person_sd}}, \code{\link{person_relsd}}
 }
 
 \section{Day aggregates}{
@@ -76,6 +71,4 @@ tools to trim datasets to only groups with enough valid observations
 
 \author{
 Sean C Murphy, \email{seanchrismurphy@gmail.com}
-
-\code{\link{person_min}}
 }
