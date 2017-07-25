@@ -24,6 +24,6 @@ expect.
 Note that this function works with long data (i.e. expects one row per beep) though it may work with different formats, I wouldn't guarantee it. Could technically
 be used to lag observation level variables if you added the beep id to the grouping vector, but no reason to use it in that fashion and I haven't tested it.
 
-\code{esm_lag} and \code{esm_day_lag} are unique in that they output variables with the same appelation (_lag) because they output what we would expect
+\code{\link{esm_lag}} and \code{\link{esm_day_lag}} are unique in that they output variables with the same appelation (_lag) because they output what we would expect
 for lag at each level so this intuitively makes sense. The variables will already have names to say whether they're at the day level or not.
 }

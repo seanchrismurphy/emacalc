@@ -6,16 +6,14 @@
 #'
 #' @author Sean C Murphy, \email{seanchrismurphy@gmail.com}
 #'
-#' @importFrom plyr join
-#' @import dplyr
-#' @import relativeVariability
-#' 
+#' \code{\link{person_min}}
+#'
 #' @section Person aggregates:
 #' 
 #' Calculate aggregate statistics at the person level
 #' 
 #' Person aggregation functions
-#' \code{\link{emacalc::person_mean}}
+#' \code{\link{person_mean}}
 #' 
 #' \code{\link{person_min}}
 #' \code{person_max}
@@ -57,4 +55,8 @@
 #' tools to trim datasets to only groups with enough valid observations
 #' 
 #' \code{trim_min_obs} \code{trim_min_valid_obs}
+#' 
+#' @importFrom plyr join
+#' @import dplyr
+#' @import relativeVariability
 "_PACKAGE"

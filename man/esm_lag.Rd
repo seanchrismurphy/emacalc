@@ -27,6 +27,6 @@ observation of each day for each P will always be NA).
 It can't be used for lagging day level variables because those need to be aggregated or sliced to one obs per day first - the dplyr 
 lag function this is built on doesn't lag at the grouping level, it just lags within groups by 1 row.
 
-\code{esm_lag} and \code{esm_day_lag} are unique in that they output variables with the same appelation (_lag) because they output what we would expect
+\code{\link{esm_lag}} and \code{\link{esm_day_lag}} are unique in that they output variables with the same appelation (_lag) because they output what we would expect
 for lag at each level so this intuitively makes sense. The variables will already have names to say whether they're at the day level or not.
 }
