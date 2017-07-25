@@ -15,11 +15,9 @@
 #' Calculate aggregate statistics at the person level
 #' 
 #' Person aggregation functions
-
 #' \code{\link{emacalc::person_mean}}
-
 #' 
-#' \code{person_min}
+#' \code{\link{person_min}}
 #' \code{person_max}
 #' \code{person_sd}
 #' \code{person_relsd}
