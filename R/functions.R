@@ -688,7 +688,7 @@ rescale_cols <- function(data, variables, old.min, old.max, new.min, new.max) {
 #' 
 #' This function allows for trimming esm data down so that only days (or people) with a minimum number of observations
 #' are included. If there is a 'missed' variable (coded 1 = missed) these rows will not be counted. To 
-#' make sure enough observations of a particular variable are included, use \code{trim_min_valid_obs}.
+#' make sure enough observations of a particular variable are included, use \code{\link{trim_min_valid_obs}}.
 #' 
 #' @param data The input dataset
 #' @param grouping The grouping variables within which you require a minimum observation number. Could be just
@@ -720,7 +720,7 @@ trim_min_obs <- function(data, grouping, min.obs = 2) {
 #' This function allows for trimming esm data down so that only days (or people) with a minimum number of observations
 #' are included. If there is a 'missed' variable (coded 1 = missed) these rows will not be counted. Missing values
 #' on the specified variables will also not be counted. Essentially, this ensures that there will be at least min.obs
-#' number of valid values within each grouping factor retained. For a more general function, see \code{trim_min_obs}.
+#' number of valid values within each grouping factor retained. For a more general function, see \code{\link{trim_min_obs}}.
 #' 
 #' @param data The input dataset
 #' @param grouping The grouping variables within which you require a minimum observation number. Could be just

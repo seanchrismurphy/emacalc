@@ -17,7 +17,7 @@ your person id or your person id and day. Should take the form of a character ve
 \description{
 This function allows for trimming esm data down so that only days (or people) with a minimum number of observations
 are included. If there is a 'missed' variable (coded 1 = missed) these rows will not be counted. To 
-make sure enough observations of a particular variable are included, use \code{trim_min_valid_obs}.
+make sure enough observations of a particular variable are included, use \code{\link{trim_min_valid_obs}}.
 }
 \examples{
 # Trim the sleep dataset to have 2 obs per ID (this does nothing, but illustrates syntax)

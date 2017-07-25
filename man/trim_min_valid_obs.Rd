@@ -20,7 +20,7 @@ your person id or your person id and day. Should take the form of a character ve
 This function allows for trimming esm data down so that only days (or people) with a minimum number of observations
 are included. If there is a 'missed' variable (coded 1 = missed) these rows will not be counted. Missing values
 on the specified variables will also not be counted. Essentially, this ensures that there will be at least min.obs
-number of valid values within each grouping factor retained. For a more general function, see \code{trim_min_obs}.
+number of valid values within each grouping factor retained. For a more general function, see \code{\link{trim_min_obs}}.
 }
 \examples{
 # Trim the sleep dataset to have 2 obs per ID (this does nothing, but illustrates syntax)
