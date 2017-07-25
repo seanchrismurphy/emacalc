@@ -16,7 +16,7 @@ person and moment level dataframes, and numerous other utility functions.
 Calculate aggregate statistics at the person level
 
 Person aggregation functions
-\code{\link{person_mean}}.
+\code{\link{emacalc::person_mean}}
 
 \code{person_min}
 \code{person_max}

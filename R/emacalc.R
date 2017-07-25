@@ -16,7 +16,7 @@
 #' 
 #' Person aggregation functions
 
-#' \code{\link{person_mean}}.
+#' \code{\link{emacalc::person_mean}}
 
 #' 
 #' \code{person_min}
