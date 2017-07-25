@@ -6,7 +6,7 @@
 #'
 #' @author Sean C Murphy, \email{seanchrismurphy@gmail.com}
 #'
-#' @import plyr
+#' @importFrom plyr join
 #' @import dplyr
 #' @import relativeVariability
 #' 
