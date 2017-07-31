@@ -851,9 +851,9 @@ return(out)
 #' @param variables The character vector of variables to lag
 #' @param grouping The character vector of grouping variables
 #' @export
-mycenter <- function(data, variables, grouping) {
+center_cols <- function(data, variables, grouping) {
   
-  # Writing my own centering funtion in case scale was fucking it up. and it was. Huzzah.  
+  # Writing my own centering funtion because using scales messes things up sometimes.   
   mycent <- function(x) {
     out <- x - mean(x, na.rm = TRUE)
     return(out)

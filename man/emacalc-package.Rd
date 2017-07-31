@@ -60,7 +60,7 @@ Split up complete datasets into subsets of data with only higher (e.g. trait) or
 
 Tools for managing operations on many variables
 
-\code{\link{operate_cols}}, \code{\link{rename_cols}}, \code{\link{rescale_cols}}, \code{\link{reverse_cols}}
+\code{\link{operate_cols}}, \code{\link{rename_cols}}, \code{\link{rescale_cols}}, \code{\link{reverse_cols}}, \code{\link{center_cols}}
 }
 
 \section{Trimming functions}{
