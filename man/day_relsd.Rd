@@ -4,15 +4,16 @@
 \alias{day_relsd}
 \title{Calculates the relative sd of variables at the day level}
 \usage{
-day_relsd(data, variables, min, max, grouping = c("person_id", "daynr"))
+day_relsd(data, variables, min, max, person_id, day_id)
 }
 \arguments{
 \item{data}{The input dataset}
 
 \item{variables}{A character vector of input variables e.g. c('negemo', 'posemo').}
 
-\item{grouping}{A character vector of grouping variables at which you want to calculate the relative sd. This should be your person id variable followed by your day variable.
-defaults to c('person_id', 'daynr')}
+\item{person_id}{The person level grouping variable - this should be your person id variable.}
+
+\item{day_id}{The day level grouping variable - this should be your day id variable.}
 }
 \description{
 This is a simple function that returns a dataframe in which the day-level relative sd of any input variables

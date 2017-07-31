@@ -4,14 +4,16 @@
 \alias{esm_day_lag}
 \title{Lag day-level (or wave-level, month-level, week-level) variables}
 \usage{
-esm_day_lag(data, variables, grouping = c("person_id", "daynr"))
+esm_day_lag(data, variables, person_id, day_id)
 }
 \arguments{
 \item{data}{The dataset to operate on.}
 
 \item{variables}{The character vector of variables to lag}
 
-\item{grouping}{The character vector of grouping variables (by default, c('person_id', 'daynr'))}
+\item{person_id}{The person level grouping variable - this should be your person id variable.}
+
+\item{day_id}{The day level grouping variable - this should be your day id variable.}
 }
 \description{
 This function will lag any variable at an aggregated level above the observation level (usually the day level).

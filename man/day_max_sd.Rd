@@ -4,15 +4,16 @@
 \alias{day_max_sd}
 \title{Calculates the (person level) standard deviation of daily maxima of variables}
 \usage{
-day_max_sd(data, variables, grouping = c("person_id", "daynr"))
+day_max_sd(data, variables, person_id, day_id)
 }
 \arguments{
 \item{data}{The input dataset}
 
 \item{variables}{A character vector of input variables e.g. c('negemo', 'posemo').}
 
-\item{grouping}{The grouping variables at which you want to calculate the mean. This should be your person id variable 
-followed by your day identifier. defaults to c('person_id', 'daynr')}
+\item{person_id}{The person level grouping variable - this should be your person id variable.}
+
+\item{day_id}{The day level grouping variable - this should be your day id variable.}
 }
 \description{
 This is a function that returns a dataframe in which the person-level standard deviation of the daily max

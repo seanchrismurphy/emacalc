@@ -4,15 +4,16 @@
 \alias{day_min}
 \title{Calculates the min of variables at the day level}
 \usage{
-day_min(data, variables, grouping = c("person_id", "daynr"))
+day_min(data, variables, person_id, day_id)
 }
 \arguments{
 \item{data}{The input dataset}
 
 \item{variables}{A character vector of input variables e.g. c('negemo', 'posemo').}
 
-\item{grouping}{A character vector of grouping variables at which you want to calculate the min. This should be your person id variable followed by your day variable.
-defaults to c('person_id', 'daynr')}
+\item{person_id}{The person level grouping variable - this should be your person id variable.}
+
+\item{day_id}{The day level grouping variable - this should be your day id variable.}
 }
 \description{
 This is a simple function that returns a dataframe in which the day-level min of any input variables

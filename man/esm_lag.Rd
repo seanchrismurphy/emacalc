@@ -4,15 +4,16 @@
 \alias{esm_lag}
 \title{Lag observation-level variables}
 \usage{
-esm_lag(data, variables, grouping = c("person_id", "daynr"),
-  order = "obs_id")
+esm_lag(data, variables, person_id, day_id, order = "obs_id")
 }
 \arguments{
 \item{data}{The dataset to operate on.}
 
 \item{variables}{The character vector of variables to lag}
 
-\item{grouping}{The character vector of grouping variables (by default, c('person_id', 'daynr'))}
+\item{person_id}{The person level grouping variable - this should be your person id variable.}
+
+\item{day_id}{The day level grouping variable - this should be your day id variable.}
 
 \item{order}{The observation number to order by within days. By default it is 'obs_id'. You will want
 this to be a unique, ordered observation identifier. It does not matter whether it is unique only within

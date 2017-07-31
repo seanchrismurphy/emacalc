@@ -4,14 +4,14 @@
 \alias{person_mean}
 \title{Calculates the mean of variables at the person level}
 \usage{
-person_mean(data, variables, grouping = c("person_id"))
+person_mean(data, variables, person_id)
 }
 \arguments{
 \item{data}{The input dataset}
 
 \item{variables}{A character vector of input variables e.g. c('negemo', 'posemo').}
 
-\item{grouping}{The grouping variables at which you want to calculate the mean. This should be your person id variable defaults to 'person_id'}
+\item{person_id}{The grouping variable to calculate your mean at - this should be your person id variable.}
 }
 \description{
 This is a simple function that returns a dataframe in which the person-level mean of any input variables
