@@ -4,12 +4,12 @@
 \alias{esm_day_lag}
 \title{Lag day-level (or wave-level, month-level, week-level) variables}
 \usage{
-esm_day_lag(data, vars, grouping = c("person_id", "daynr"))
+esm_day_lag(data, variables, grouping = c("person_id", "daynr"))
 }
 \arguments{
 \item{data}{The dataset to operate on.}
 
-\item{vars}{The character vector of variables to lag}
+\item{variables}{The character vector of variables to lag}
 
 \item{grouping}{The character vector of grouping variables (by default, c('person_id', 'daynr'))}
 }

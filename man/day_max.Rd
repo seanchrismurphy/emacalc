@@ -4,12 +4,12 @@
 \alias{day_max}
 \title{Calculates the max of variables at the day level}
 \usage{
-day_max(data, vars, grouping = c("person_id", "daynr"))
+day_max(data, variables, grouping = c("person_id", "daynr"))
 }
 \arguments{
 \item{data}{The input dataset}
 
-\item{vars}{A character vector of input variables e.g. c('negemo', 'posemo').}
+\item{variables}{A character vector of input variables e.g. c('negemo', 'posemo').}
 
 \item{grouping}{A character vector of grouping variables at which you want to calculate the max. This should be your person id variable followed by your day variable.
 defaults to c('person_id', 'daynr')}

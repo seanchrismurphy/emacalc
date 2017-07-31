@@ -4,12 +4,13 @@
 \alias{esm_lag}
 \title{Lag observation-level variables}
 \usage{
-esm_lag(data, vars, grouping = c("person_id", "daynr"), order = "obs_id")
+esm_lag(data, variables, grouping = c("person_id", "daynr"),
+  order = "obs_id")
 }
 \arguments{
 \item{data}{The dataset to operate on.}
 
-\item{vars}{The character vector of variables to lag}
+\item{variables}{The character vector of variables to lag}
 
 \item{grouping}{The character vector of grouping variables (by default, c('person_id', 'daynr'))}
 

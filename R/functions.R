@@ -27,10 +27,12 @@ keep_top <- function(data, grouping) {
     # If you just put them in or try to name them or something, it doesn't work. Of course, the NSE vignette
     # only shows how it works with summarize and none of the other 5 functions, because why would you? 
     
-    # However, if you call select_if directly you can see that it calls select_(.data, .dots = vars) so that
+    # However, if you call select_if directly you can see that it calls select_(.data, .dots = variables) so that
     # makes sense. 
     select_(.dots = c(grouping, chosen)) %>%
-    group_by_(grouping) %>%
+    # Fixed a bug where this didn't have .dots - it wouldn't have worked to keep anything at the day level. Didn't see it because
+    # I've only been using it to keep at the person level. 
+    group_by_(.dots = grouping) %>%
     slice(1) %>%
     as.data.frame()
   return(data)
@@ -75,11 +77,11 @@ keep_bottom <- function(data, grouping) {
 #' here for ease of use and also to ensure that variables are consistently named coming out of these functions.
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable defaults to 'person_id'
 #' 
 #' @export
-person_mean <- function(data, vars, grouping = c('person_id')) {
+person_mean <- function(data, variables, grouping = c('person_id')) {
   
   # Set up the expression for mutate_at which ensures that the output variables are named consistently regardless of if there's only one. This could look a bit
   # opaque, and the explanation is a little complex. Essentiallys mutate_at calls funs to create the appropriate expressions to mutate. The way that it works, 
@@ -87,16 +89,16 @@ person_mean <- function(data, vars, grouping = c('person_id')) {
   # to delineate them, but will just call it 'mean' if there's only one. I had thought this was a hard limit, but my understanding of how the lazy evaluation works, 
   # though still incomplete, has expanded. There is a version of funs (called funs_) for NSE. It calls lazyeval differently in complex ways, but what it works out to
   # is that you can pass a list of arguments (set up with setNames for ease) to funs_ and it will craft them as expected. So the below expression says to craft a list
-  # of arguments of length vars, each of which says 'varx_mean' = mean(., na.rm = TRUE). That means they will be consistently named. The flexibility of this approach
+  # of arguments of length variables, each of which says 'varx_mean' = mean(., na.rm = TRUE). That means they will be consistently named. The flexibility of this approach
   # means that in theory it could be used to craft a mega function where the user could specify any grouping level, any function to be used, and any output name, 
   # essentially encapsulating all the functions I've written in this section. However, this would be quite unweildy and somewhat default the purpose of making functions
   # simple enoguh to easily fit in a lapply call, so for now I am just using it to ensure output consistency. 
   
-  # Also note that setnames in the way that I had done it (with paste) only works with single variables, because mutate_at multiples vars and funs in 
+  # Also note that setnames in the way that I had done it (with paste) only works with single variables, because mutate_at multiples variables and funs in 
   # every possible combination. The below if statement concisely handles this.
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('mean(., na.rm = TRUE)', length(vars)), paste0(vars, '_person_mean'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('mean(., na.rm = TRUE)', length(variables)), paste0(variables, '_person_mean'))
   } else {
     mydots = setNames('mean(., na.rm = TRUE)', 'person_mean')
   }
@@ -104,7 +106,7 @@ person_mean <- function(data, vars, grouping = c('person_id')) {
   
   out <- group_by_(data, .dots = grouping) %>%
     # Use funs_ instead of funs, so that we can use mydots. 
-    mutate_at(vars, funs_(mydots)) %>%
+    mutate_at(variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -115,20 +117,20 @@ person_mean <- function(data, vars, grouping = c('person_id')) {
 #' has been calculated. Output variables will be named 'input_variable_day_mean'
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping A character vector of grouping variables at which you want to calculate the mean. This should be your person id variable followed by your day variable.
 #' defaults to c('person_id', 'daynr')
 #' @export
-day_mean <- function(data, vars, grouping = c('person_id', 'daynr')) {
+day_mean <- function(data, variables, grouping = c('person_id', 'daynr')) {
 
-  if (length(vars) == 1) {
-    mydots = setNames(rep('mean(., na.rm = TRUE)', length(vars)), paste0(vars, '_day_mean'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('mean(., na.rm = TRUE)', length(variables)), paste0(variables, '_day_mean'))
   } else {
     mydots = setNames('mean(., na.rm = TRUE)', 'day_mean')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
-    mutate_at(vars, funs_(mydots)) %>%
+    mutate_at(variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -140,20 +142,20 @@ day_mean <- function(data, vars, grouping = c('person_id', 'daynr')) {
 #' 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable defaults to 'person_id'
 #' 
 #' @export
-person_max <- function(data, vars, grouping = c('person_id')) {
+person_max <- function(data, variables, grouping = c('person_id')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('max(., na.rm = TRUE)', length(vars)), paste0(vars, '_person_max'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('max(., na.rm = TRUE)', length(variables)), paste0(variables, '_person_max'))
   } else {
     mydots = setNames('max(., na.rm = TRUE)', 'person_max')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
-    mutate_at( vars, funs_(mydots)) %>%
+    mutate_at( variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -164,20 +166,20 @@ person_max <- function(data, vars, grouping = c('person_id')) {
 #' has been calculated. Output variables will be named 'input_variable_day_max'
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping A character vector of grouping variables at which you want to calculate the max. This should be your person id variable followed by your day variable.
 #' defaults to c('person_id', 'daynr')
 #' @export
-day_max <- function(data, vars, grouping = c('person_id', 'daynr')) {
+day_max <- function(data, variables, grouping = c('person_id', 'daynr')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('max(., na.rm = TRUE)', length(vars)), paste0(vars, '_day_max'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('max(., na.rm = TRUE)', length(variables)), paste0(variables, '_day_max'))
   } else {
     mydots = setNames('max(., na.rm = TRUE)', 'day_max')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
-    mutate_at( vars, funs_(mydots)) %>%
+    mutate_at( variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -189,20 +191,20 @@ day_max <- function(data, vars, grouping = c('person_id', 'daynr')) {
 #' 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable defaults to 'person_id'
 #' 
 #' @export
-person_min <- function(data, vars, grouping = c('person_id')) {
+person_min <- function(data, variables, grouping = c('person_id')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('min(., na.rm = TRUE)', length(vars)), paste0(vars, '_person_min'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('min(., na.rm = TRUE)', length(variables)), paste0(variables, '_person_min'))
   } else {
     mydots = setNames('min(., na.rm = TRUE)', 'person_min')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
-    mutate_at( vars, funs_(mydots)) %>%
+    mutate_at( variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -213,20 +215,20 @@ person_min <- function(data, vars, grouping = c('person_id')) {
 #' has been calculated. Output variables will be named 'input_variable_day_min'
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping A character vector of grouping variables at which you want to calculate the min. This should be your person id variable followed by your day variable.
 #' defaults to c('person_id', 'daynr')
 #' @export
-day_min <- function(data, vars, grouping = c('person_id', 'daynr')) {
+day_min <- function(data, variables, grouping = c('person_id', 'daynr')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('min(., na.rm = TRUE)', length(vars)), paste0(vars, '_day_min'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('min(., na.rm = TRUE)', length(variables)), paste0(variables, '_day_min'))
   } else {
     mydots = setNames('min(., na.rm = TRUE)', 'day_min')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
-    mutate_at( vars, funs_(mydots)) %>%
+    mutate_at( variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -238,21 +240,23 @@ day_min <- function(data, vars, grouping = c('person_id', 'daynr')) {
 #' 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable defaults to 'person_id'
 #' 
 #' @export
-person_sd <- function(data, vars, grouping = c('person_id')) {
+person_sd <- function(data, variables, grouping = c('person_id')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('sd(., na.rm = TRUE)', length(vars)), paste0(vars, '_person_sd'))
+  # Note. I had to call the packages for sd and relative sd otherwise the dplyr fun_ evaluation seems only to check base for functions and then give up, 
+  # or else there's some other conflict. BUt it works like this. 
+  if (length(variables) == 1) {
+    mydots = setNames(rep('stats::sd(., na.rm = TRUE)', length(variables)), paste0(variables, '_person_sd'))
   } else {
-    mydots = setNames('sd(., na.rm = TRUE)', 'person_sd')
+    mydots = setNames('stats::sd(., na.rm = TRUE)', 'person_sd')
   }
   
   
   out <- group_by_(data, .dots = grouping) %>%
-    mutate_at( vars, funs_(mydots)) %>%
+    mutate_at( variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -263,20 +267,20 @@ person_sd <- function(data, vars, grouping = c('person_id')) {
 #' has been calculated. Output variables will be named 'input_variable_day_sd'
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping A character vector of grouping variables at which you want to calculate the sd. This should be your person id variable followed by your day variable.
 #' defaults to c('person_id', 'daynr')
 #' @export
-day_sd <- function(data, vars, grouping = c('person_id', 'daynr')) {
+day_sd <- function(data, variables, grouping = c('person_id', 'daynr')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('sd(., na.rm = TRUE)', length(vars)), paste0(vars, '_day_sd'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('stats::sd(., na.rm = TRUE)', length(variables)), paste0(variables, '_day_sd'))
   } else {
-    mydots = setNames('sd(., na.rm = TRUE)', 'day_sd')
+    mydots = setNames('stats::sd(., na.rm = TRUE)', 'day_sd')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
-    mutate_at( vars, funs_(mydots)) %>%
+    mutate_at( variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -289,21 +293,21 @@ day_sd <- function(data, vars, grouping = c('person_id', 'daynr')) {
 #' 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable defaults to 'person_id'
 #' 
 #' @export
-person_relsd <- function(data, vars, grouping = c('person_id'), min, max) {
+person_relsd <- function(data, variables, grouping = c('person_id'), min, max) {
   
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('relativeSD(., MIN = min, MAX = max)', length(vars)), paste0(vars, '_person_relsd'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), length(variables)), paste0(variables, '_person_relsd'))
   } else {
-    mydots = setNames('relativeSD(., MIN = min, MAX = max)', 'person_relsd')
+    mydots = setNames(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), 'person_relsd')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
-    mutate_at( vars, funs_(mydots)) %>%
+    mutate_at( variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -314,20 +318,20 @@ person_relsd <- function(data, vars, grouping = c('person_id'), min, max) {
 #' has been calculated. Output variables will be named 'input_variable_day_relsd'
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping A character vector of grouping variables at which you want to calculate the relative sd. This should be your person id variable followed by your day variable.
 #' defaults to c('person_id', 'daynr')
 #' @export
-day_relsd <- function(data, vars, min, max, grouping = c('person_id', 'daynr')) {
+day_relsd <- function(data, variables, min, max, grouping = c('person_id', 'daynr')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('relativeSD(., MIN = min, MAX = max)', length(vars)), paste0(vars, '_day_relsd'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), length(variables)), paste0(variables, '_day_relsd'))
   } else {
-    mydots = setNames('relativeSD(., MIN = min, MAX = max)', 'day_relsd')
+    mydots = setNames(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), 'day_relsd')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
-    mutate_at( vars, funs_(mydots)) %>%
+    mutate_at( variables, funs_(mydots)) %>%
     as.data.frame()
   out
 }
@@ -342,29 +346,29 @@ day_relsd <- function(data, vars, min, max, grouping = c('person_id', 'daynr')) 
 #' at each day is taken, then the standard deviation of these means is calculated. 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable 
 #' followed by your day identifier. defaults to c('person_id', 'daynr')
 #' 
 #' @export
-day_mean_sd <- function(data, vars, grouping = c('person_id', 'daynr')) {
+day_mean_sd <- function(data, variables, grouping = c('person_id', 'daynr')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('sd(., na.rm = TRUE)', length(vars)), paste0(vars, '_day_mean_sd'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('stats::sd(., na.rm = TRUE)', length(variables)), paste0(variables, '_day_mean_sd'))
   } else {
-    mydots = setNames('sd(., na.rm = TRUE)', 'day_mean_sd')
+    mydots = setNames('stats::sd(., na.rm = TRUE)', 'day_mean_sd')
   }
   
   
   out <- group_by_(data, .dots = grouping) %>%
     # Summarize to the means of each (probably) day
-    summarize_at(vars, funs(mean(., na.rm = TRUE))) %>%
+    summarize_at(variables, funs(mean(., na.rm = TRUE))) %>%
     
     # Also realised that after summarizing to get the day means, we're still grouped at the day level, meaning we wont get any variability.
     # we need to group_by person first. 
     group_by_(.dots = grouping[1:(length(grouping) - 1)]) %>%
     # Calcualte the SD for each participant, which is another summarize call I realise. 
-    summarize_at(vars, funs_(mydots)) %>%
+    summarize_at(variables, funs_(mydots)) %>%
     # Join that one score per P back into the dataset. So we've basically aggregated up twice (to the day, then to the person) then joined that trait-level score
     # back into the main df. 
     join(data, .) %>%
@@ -380,28 +384,28 @@ day_mean_sd <- function(data, vars, grouping = c('person_id', 'daynr')) {
 #' at each day is taken, then the relative standard deviation of these means is calculated. 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable 
 #' followed by your day identifier. defaults to c('person_id', 'daynr')
 #' 
 #' @export
-day_mean_relsd <- function(data, vars, min, max, grouping = c('person_id', 'daynr')) {
+day_mean_relsd <- function(data, variables, min, max, grouping = c('person_id', 'daynr')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('relativeSD(., MIN = min, MAX = max)', length(vars)), paste0(vars, '_day_mean_relsd'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), length(variables)), paste0(variables, '_day_mean_relsd'))
   } else {
-    mydots = setNames('relativeSD(., MIN = min, MAX = max)', 'day_mean_relsd')
+    mydots = setNames(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), 'day_mean_relsd')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
     # Summarize to the means of each (probably) day
-    summarize_at(vars, funs(mean(., na.rm = TRUE))) %>%
+    summarize_at(variables, funs(mean(., na.rm = TRUE))) %>%
     
     # Also realised that after summarizing to get the day means, we're still grouped at the day level, meaning we wont get any variability.
     # we need to group_by person first. 
     group_by_(.dots = grouping[1:(length(grouping) - 1)]) %>%
     # Calcualte the SD for each participant, which is another summarize call I realise. 
-    summarize_at(vars, funs_(mydots)) %>%
+    summarize_at(variables, funs_(mydots)) %>%
     # Join that one score per P back into the dataset. So we've basically aggregated up twice (to the day, then to the person) then joined that trait-level score
     # back into the main df. 
     join(data, .) %>%
@@ -418,28 +422,28 @@ day_mean_relsd <- function(data, vars, min, max, grouping = c('person_id', 'dayn
 #' at each day is taken, then the standard deviation of these maxima is calculated. 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable 
 #' followed by your day identifier. defaults to c('person_id', 'daynr')
 #' 
 #' @export
-day_max_sd <- function(data, vars, grouping = c('person_id', 'daynr')) {
+day_max_sd <- function(data, variables, grouping = c('person_id', 'daynr')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('sd(., na.rm = TRUE)', length(vars)), paste0(vars, '_day_max_sd'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('stats::sd(., na.rm = TRUE)', length(variables)), paste0(variables, '_day_max_sd'))
   } else {
-    mydots = setNames('sd(., na.rm = TRUE)', 'day_max_sd')
+    mydots = setNames('stats::sd(., na.rm = TRUE)', 'day_max_sd')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
     # Summarize to the means of each (probably) day
-    summarize_at(vars, funs(max(., na.rm = TRUE))) %>%
+    summarize_at(variables, funs(max(., na.rm = TRUE))) %>%
     
     # Also realised that after summarizing to get the day means, we're still grouped at the day level, meaning we wont get any variability.
     # we need to group_by person first. 
     group_by_(.dots = grouping[1:(length(grouping) - 1)]) %>%
     # Calcualte the SD for each participant, which is another summarize call I realise. 
-    summarize_at(vars, funs_(mydots)) %>%
+    summarize_at(variables, funs_(mydots)) %>%
     # Join that one score per P back into the dataset. So we've basically aggregated up twice (to the day, then to the person) then joined that trait-level score
     # back into the main df. 
     join(data, .) %>%
@@ -455,29 +459,29 @@ day_max_sd <- function(data, vars, grouping = c('person_id', 'daynr')) {
 #' at each day is taken, then the relative standard deviation of these maxima is calculated. 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable 
 #' followed by your day identifier. defaults to c('person_id', 'daynr')
 #' 
 #' @export
-day_max_relsd <- function(data, vars, min, max, grouping = c('person_id', 'daynr')) {
+day_max_relsd <- function(data, variables, min, max, grouping = c('person_id', 'daynr')) {
   
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('relativeSD(., MIN = min, MAX = max)', length(vars)), paste0(vars, '_day_max_relsd'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), length(variables)), paste0(variables, '_day_max_relsd'))
   } else {
-    mydots = setNames('relativeSD(., MIN = min, MAX = max)', 'day_max_relsd')
+    mydots = setNames(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), 'day_max_relsd')
   }
   
   out <- group_by_(data, .dots = grouping) %>%
     # Summarize to the means of each (probably) day
-    summarize_at(vars, funs(max(., na.rm = TRUE))) %>%
+    summarize_at(variables, funs(max(., na.rm = TRUE))) %>%
     
     # Also realised that after summarizing to get the day means, we're still grouped at the day level, meaning we wont get any variability.
     # we need to group_by person first. 
     group_by_(.dots = grouping[1:(length(grouping) - 1)]) %>%
     # Calcualte the SD for each participant, which is another summarize call I realise. 
-    summarize_at(vars, funs_(mydots)) %>%
+    summarize_at(variables, funs_(mydots)) %>%
     # Join that one score per P back into the dataset. So we've basically aggregated up twice (to the day, then to the person) then joined that trait-level score
     # back into the main df. 
     join(data, .) %>%
@@ -493,29 +497,29 @@ day_max_relsd <- function(data, vars, min, max, grouping = c('person_id', 'daynr
 #' at each day is taken, then the standard deviation of these minima is calculated. 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable 
 #' followed by your day identifier. defaults to c('person_id', 'daynr')
 #' 
 #' @export
-day_min_sd <- function(data, vars, grouping = c('person_id', 'daynr')) {
+day_min_sd <- function(data, variables, grouping = c('person_id', 'daynr')) {
 
-  if (length(vars) == 1) {
-    mydots = setNames(rep('sd(., na.rm = TRUE)', length(vars)), paste0(vars, '_day_min_sd'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('stats::sd(., na.rm = TRUE)', length(variables)), paste0(variables, '_day_min_sd'))
   } else {
-    mydots = setNames('sd(., na.rm = TRUE)', 'day_min_sd')
+    mydots = setNames('stats::sd(., na.rm = TRUE)', 'day_min_sd')
   }
   
 
 out <- group_by_(data, .dots = grouping) %>%
   # Summarize to the means of each (probably) day
-  summarize_at(vars, funs(min(., na.rm = TRUE))) %>%
+  summarize_at(variables, funs(min(., na.rm = TRUE))) %>%
   
   # Also realised that after summarizing to get the day means, we're still grouped at the day level, meaning we wont get any variability.
   # we need to group_by person first. 
   group_by_(.dots = grouping[1:(length(grouping) - 1)]) %>%
   # Calcualte the SD for each participant, which is another summarize call I realise. 
-  summarize_at(vars, funs_(mydots)) %>%
+  summarize_at(variables, funs_(mydots)) %>%
   # Join that one score per P back into the dataset. So we've basically aggregated up twice (to the day, then to the person) then joined that trait-level score
   # back into the main df. 
   join(data, .) %>%
@@ -532,29 +536,31 @@ return(out)
 #' at each day is taken, then the relative standard deviation of these minima is calculated. 
 #' 
 #' @param data The input dataset
-#' @param vars A character vector of input variables e.g. c('negemo', 'posemo'). 
+#' @param variables A character vector of input variables e.g. c('negemo', 'posemo'). 
 #' @param grouping The grouping variables at which you want to calculate the mean. This should be your person id variable 
 #' followed by your day identifier. defaults to c('person_id', 'daynr')
 #' 
 #' @export
-day_min_relsd <- function(data, vars, min, max, grouping = c('person_id', 'daynr')) {
+day_min_relsd <- function(data, variables, min, max, grouping = c('person_id', 'daynr')) {
 
-  if (length(vars) == 1) {
-    mydots = setNames(rep('relativeSD(., MIN = min, MAX = max)', length(vars)), paste0(vars, '_day_min_relsd'))
+  if (length(variables) == 1) {
+    # If I left min as a character in here, it got passed through as the literal min (function) instead of the argument. Have to evaluate the argument
+    # here (or you might be able to call the parent environment later but that's not easily within my abilities). 
+    mydots = setNames(rep(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), length(variables)), paste0(variables, '_day_min_relsd'))
   } else {
-    mydots = setNames('relativeSD(., MIN = min, MAX = max)', 'day_min_relsd')
+    mydots = setNames(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), 'day_min_relsd')
   }
   
 
 out <- group_by_(data, .dots = grouping) %>%
   # Summarize to the means of each (probably) day
-  summarize_at(vars, funs(min(., na.rm = TRUE))) %>%
+  summarize_at(variables, funs(min(., na.rm = TRUE))) %>%
   
   # Also realised that after summarizing to get the day means, we're still grouped at the day level, meaning we wont get any variability.
   # we need to group_by person first. 
   group_by_(.dots = grouping[1:(length(grouping) - 1)]) %>%
   # Calcualte the SD for each participant, which is another summarize call I realise. 
-  summarize_at(vars, funs_(mydots)) %>%
+  summarize_at(variables, funs_(mydots)) %>%
   # Join that one score per P back into the dataset. So we've basically aggregated up twice (to the day, then to the person) then joined that trait-level score
   # back into the main df. 
   join(data, .) %>%
@@ -605,8 +611,8 @@ rename_cols <- function(data, ...) {
 #' 
 #' @export
 reverse_cols <- function(data, variables, min, max) {
-  study_vars <- variables[variables %in% colnames(data)]
-  data[study_vars] <- (max + min) - data[study_vars] 
+  study_variables <- variables[variables %in% colnames(data)]
+  data[study_variables] <- (max + min) - data[study_variables] 
   data
 }
 
@@ -629,22 +635,22 @@ reverse_cols <- function(data, variables, min, max) {
 #' 
 #' @export
 operate_cols <- function(data, variables, operation = 'add', number) {
-  study_vars <- variables[variables %in% colnames(data)]
+  study_variables <- variables[variables %in% colnames(data)]
   
   if (operation %in% 'add') {
-    data[study_vars] <- data[study_vars] + number
+    data[study_variables] <- data[study_variables] + number
   }
   
   if (operation %in% 'subtract') {
-    data[study_vars] <- data[study_vars] - number
+    data[study_variables] <- data[study_variables] - number
   }
   
   if (operation %in% 'multiply') {
-    data[study_vars] <- data[study_vars] * number
+    data[study_variables] <- data[study_variables] * number
   }
   
   if (operation %in% 'divide') {
-    data[study_vars] <- data[study_vars] / number
+    data[study_variables] <- data[study_variables] / number
   }
   data
 }
@@ -675,9 +681,9 @@ my_rescale <- function (x, new.min, new.max, old.min, old.max) {
 #' @export
 rescale_cols <- function(data, variables, old.min, old.max, new.min, new.max) {
   
-  study_vars <- variables[variables %in% colnames(data)]
+  study_variables <- variables[variables %in% colnames(data)]
   
-  data[study_vars] <- my_rescale(data[study_vars], new.min = new.min, 
+  data[study_variables] <- my_rescale(data[study_variables], new.min = new.min, 
                                  new.max = new.max, old.min = old.min, 
                                  old.max = old.max)
   data
@@ -764,16 +770,16 @@ trim_min_valid_obs <- function(data, grouping, variables, min.obs = 2) {
 #' for lag at each level so this intuitively makes sense. The variables will already have names to say whether they're at the day level or not. 
 #' 
 #' @param data The dataset to operate on.
-#' @param vars The character vector of variables to lag
+#' @param variables The character vector of variables to lag
 #' @param grouping The character vector of grouping variables (by default, c('person_id', 'daynr'))
 #' @param order The observation number to order by within days. By default it is 'obs_id'. You will want
 #' this to be a unique, ordered observation identifier. It does not matter whether it is unique only within
 #' days (i.e. resets each day for each p). 
 #' @export
-esm_lag <- function(data, vars, grouping = c('person_id', 'daynr'), order = 'obs_id') {
+esm_lag <- function(data, variables, grouping = c('person_id', 'daynr'), order = 'obs_id') {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('lag(.)', length(vars)), paste0(vars, '_lag'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('lag(.)', length(variables)), paste0(variables, '_lag'))
   } else {
     mydots = setNames('lag(.)', 'lag')
   }
@@ -782,7 +788,7 @@ esm_lag <- function(data, vars, grouping = c('person_id', 'daynr'), order = 'obs
     dplyr::arrange_(.dots = c(grouping, order)) %>%
     # We do need to group_by I believe otherwise it won't appropriate fill in NA at the start of each day, 
     # let's say. 
-    mutate_at(vars, funs_(mydots)) %>%
+    mutate_at(variables, funs_(mydots)) %>%
     as.data.frame()
   return(out)
 }
@@ -802,13 +808,13 @@ esm_lag <- function(data, vars, grouping = c('person_id', 'daynr'), order = 'obs
 #' for lag at each level so this intuitively makes sense. The variables will already have names to say whether they're at the day level or not. 
 #' 
 #' @param data The dataset to operate on.
-#' @param vars The character vector of variables to lag
+#' @param variables The character vector of variables to lag
 #' @param grouping The character vector of grouping variables (by default, c('person_id', 'daynr'))
 #' @export
-esm_day_lag <- function(data, vars, grouping = c('person_id', 'daynr')) {
+esm_day_lag <- function(data, variables, grouping = c('person_id', 'daynr')) {
   
-  if (length(vars) == 1) {
-    mydots = setNames(rep('lag(.)', length(vars)), paste0(vars, '_lag'))
+  if (length(variables) == 1) {
+    mydots = setNames(rep('lag(.)', length(variables)), paste0(variables, '_lag'))
   } else {
     mydots = setNames('lag(.)', 'lag')
   }
@@ -823,15 +829,39 @@ out <- group_by_(data, .dots = grouping) %>%
   # redunant, and if we've done it wrong, it won't fix it because day has precedence.
   arrange_(.dots = grouping) %>%
   # We don't actually need to call (.) with lag because there's no further arguments we need to access.
-  mutate_at(vars, funs_(mydots)) %>%
+  mutate_at(variables, funs_(mydots)) %>%
   # Now we need to use select to grab only the grouping columns and variable columns so we can safely merge into the main df.
   ungroup() %>%
   # We have to use paste in this select call because we want to join back in the variables we've created not the inputs. If we'd used
   # summarise instead of mutate we could just join what's left, but I don't think summarize would work with lag? it expects to return
   # one value per group. 
-  select_(.dots = c(grouping, paste0(vars, '_lag'))) %>%
+  select_(.dots = c(grouping, paste0(variables, '_lag'))) %>%
   join(data, .) %>%
   as.data.frame()
 
 return(out)
+}
+
+#' A simple function to mean center variables
+#' 
+#' This function will take a single variable and return the centered version of that variable. It can be used
+#' with the grouping parameter set to 'person_id' to get person-centered variables. 
+#' 
+#' @param data The dataset to operate on.
+#' @param variables The character vector of variables to lag
+#' @param grouping The character vector of grouping variables
+#' @export
+mycenter <- function(data, variables, grouping) {
+  
+  # Writing my own centering funtion in case scale was fucking it up. and it was. Huzzah.  
+  mycent <- function(x) {
+    out <- x - mean(x, na.rm = TRUE)
+    return(out)
+  }
+  
+  out <- group_by_(data, .dots = grouping) %>%
+    mutate_at(variables, funs('center' = mycent)) %>%
+    as.data.frame()
+  
+  return(out)
 }

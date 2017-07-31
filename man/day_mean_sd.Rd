@@ -4,12 +4,12 @@
 \alias{day_mean_sd}
 \title{Calculates the (person level) standard deviation of daily means of variables}
 \usage{
-day_mean_sd(data, vars, grouping = c("person_id", "daynr"))
+day_mean_sd(data, variables, grouping = c("person_id", "daynr"))
 }
 \arguments{
 \item{data}{The input dataset}
 
-\item{vars}{A character vector of input variables e.g. c('negemo', 'posemo').}
+\item{variables}{A character vector of input variables e.g. c('negemo', 'posemo').}
 
 \item{grouping}{The grouping variables at which you want to calculate the mean. This should be your person id variable 
 followed by your day identifier. defaults to c('person_id', 'daynr')}
