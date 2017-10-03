@@ -886,3 +886,23 @@ center_cols <- function(data, variables, grouping) {
   
   return(out)
 }
+
+
+
+
+#' A simple function to calculate the average number of beeps
+#' 
+#' This function will take a dataset and return the average number of received beeps, without taking into account missing data.
+#' 
+#' @param data The dataset to operate on.
+#' @param person_id The person identifier (i.e. 'person_id')
+#' @param day_id The day identifier (i.e. 'daynr')
+#' @export
+beep_num <- function(data, person_id, day_id) {
+  out <- group_by_(data, .dots = c(person_id, day_id)) %>%
+    dplyr::summarise('out' = n()) %>%
+    ungroup() %>%
+    dplyr::summarise('mine' = mean(out)) %>%
+    as.data.frame()
+  return(round(as.numeric(out), 2))
+}
