@@ -53,5 +53,4 @@
 #' 
 #' @importFrom plyr join
 #' @import dplyr
-#' @import relativeVariability
 "_PACKAGE"
