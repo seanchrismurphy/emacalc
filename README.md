@@ -1,51 +1,20 @@
 # emacalc
-A package to help work with ESM data
+A package to make working with ESM data easier
 
-The emacalc package was built to make it easier to work with experience sampling data. It contains functions
-to easily calculate person-level and day-level variables, lag variables at different levels, split data into
-person and moment level dataframes, and numerous other utility functions.
+The emacalc package was built to make it easier to work with experience sampling data, and is especially useful when working with multiple ESM datasets, when exploring an unfamiliar a dataset for the first time, or when many calculations need to be made. 
 
+It contains functions to automatically easily split data into person and moment level dataframes (by identifying the variables at each level), calculate person-level and day-level aggregates, flexibly lag variables at different levels, center variables, and remove individuals with pre-specified levels of missing data. 
 
-#' Person aggregates:
-#' 
-#' Calculate aggregate statistics at the person level
-#' 
-#' Person aggregation functions:
-#' 
-#' \code{\link{person_mean}}, \code{\link{person_min}}, \code{\link{person_max}}, \code{\link{person_sd}}, \code{\link{person_relsd}}
-#' 
-#' @section Day aggregates:
-#' 
-#' Calculate aggregate statistics at the day level
-#' 
-#' \code{\link{day_mean}}, \code{\link{day_min}}, \code{\link{day_max}}, \code{\link{day_sd}}, \code{\link{day_relsd}}
-#' 
-#' @section SD Day functions:
-#' Calculate standard deviation of day level statistics
-#' 
-#' \code{\link{day_mean_sd}}, \code{\link{day_min_sd}},\code{\link{day_max_sd}}
-#' 
-#' @section Rel SD Day functions:
-#' Calculate relative standard deviation of day level statistics:
-#' 
-#' \code{\link{day_mean_relsd}}, \code{\link{day_min_relsd}},\code{\link{day_max_relsd}}
-#' 
-#' @section Lagging functions:
-#' Lag variables at appropriate levels:
-#' 
-#' \code{\link{esm_lag}}, \code{\link{esm_day_lag}}
-#' 
-#' @section Splitting functions:
-#' Split up complete datasets into subsets of data with only higher (e.g. trait) or lower (e.g. moment) level variables
-#' 
-#' \code{\link{keep_bottom}}, \code{\link{keep_top}}
-#' 
-#' @section Utilities:
-#' Tools for managing operations on many variables
-#' 
-#' \code{\link{operate_cols}}, \code{\link{rename_cols}}, \code{\link{rescale_cols}}, \code{\link{reverse_cols}}, \code{\link{center_cols}}
-#' 
-#' @section Trimming functions:
-#' tools to trim datasets to only groups with enough valid observations
-#' 
-#' \code{\link{trim_min_obs}} \code{\link{trim_min_valid_obs}}
+## How to install
+
+First, install and load the devtools package:
+
+    install.packages('devtools')
+    library(devtools)
+
+Then, use the devtools package to install emacalc from this github repository:
+
+    install_github('seanchrismurphy/emacalc')
+    library(emacalc)
+
+To view the details of individual functions, just run `help(emacalc)` once the package is installed.
