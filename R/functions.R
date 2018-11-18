@@ -1,5 +1,5 @@
 options(tibble.width = Inf)
-require(plyr); require(dplyr); require(relativeVariability)
+require(plyr); require(dplyr)
 
 #' Keeps only variables that do not vary below the level of the grouping variables
 #' 
