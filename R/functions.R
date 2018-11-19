@@ -308,7 +308,7 @@ day_sd <- function(data, variables, person_id, day_id) {
 person_relsd <- function(data, variables, person_id, min, max) {
   
   # Add a setting instructing about relativevariability to people can install emacalc without having that package.
-  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please download it at https://ppw.kuleuven.be/okp/_softdl/RelativeVariabilityPackage.zip and use the install function from the devtools package on the unzipped folder')})
+  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please run "require(devtools): install_github("seanchrismurphy/relativeVariability")" and try again.')})
   
   if (length(variables) == 1) {
     mydots = setNames(rep(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), length(variables)), paste0(variables, '_person_relsd'))
@@ -335,7 +335,7 @@ person_relsd <- function(data, variables, person_id, min, max) {
 #' @export
 day_relsd <- function(data, variables, min, max, person_id, day_id) {
   
-  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please download it at https://ppw.kuleuven.be/okp/_softdl/RelativeVariabilityPackage.zip and use the install function from the devtools package on the unzipped folder')})
+  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please run "require(devtools): install_github("seanchrismurphy/relativeVariability")" and try again.')})
   
   if (length(variables) == 1) {
     mydots = setNames(rep(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), length(variables)), paste0(variables, '_day_relsd'))
@@ -405,7 +405,7 @@ day_mean_sd <- function(data, variables, person_id, day_id) {
 #' @export
 day_mean_relsd <- function(data, variables, min, max, person_id, day_id) {
   
-  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please download it at https://ppw.kuleuven.be/okp/_softdl/RelativeVariabilityPackage.zip and use the install function from the devtools package on the unzipped folder')})
+  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please run "require(devtools): install_github("seanchrismurphy/relativeVariability")" and try again.')})
   
   if (length(variables) == 1) {
     mydots = setNames(rep(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), length(variables)), paste0(variables, '_day_mean_relsd'))
@@ -487,7 +487,7 @@ day_max_sd <- function(data, variables, person_id, day_id) {
 #' @export
 day_max_relsd <- function(data, variables, min, max, person_id, day_id) {
   
-  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please download it at https://ppw.kuleuven.be/okp/_softdl/RelativeVariabilityPackage.zip and use the install function from the devtools package on the unzipped folder')})
+  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please run "require(devtools): install_github("seanchrismurphy/relativeVariability")" and try again.')})
   
   if (length(variables) == 1) {
     mydots = setNames(rep(paste0('relativeVariability::relativeSD(., MIN = ', min, ', MAX = ', max, ')'), length(variables)), paste0(variables, '_day_max_relsd'))
@@ -568,7 +568,7 @@ return(out)
 #' 
 #' @export
 day_min_relsd <- function(data, variables, min, max, person_id, day_id) {
-  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please download it at https://ppw.kuleuven.be/okp/_softdl/RelativeVariabilityPackage.zip and use the install function from the devtools package on the unzipped folder')})
+  tryCatch(library(relativeVariability), error = function(e) {print('Relativevariability package not installed. Please run "require(devtools): install_github("seanchrismurphy/relativeVariability")" and try again.')})
   
   if (length(variables) == 1) {
     # If I left min as a character in here, it got passed through as the literal min (function) instead of the argument. Have to evaluate the argument
